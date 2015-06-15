@@ -1,0 +1,15 @@
+---
+docker_version: 1.6.0
+docker_port: 2375
+docker_compose_version: 1.2.0
+docker_compose_path: ./bin/docker-compose
+
+env_values:
+  - { key: DOCKER_HOST, value: "tcp://localhost:{{ docker_port }}" }
+  - { key: APP_MOUNT_DIR, value: "/opt/app" }
+  - { key: MYSQL_ROOT_PASSWORD, value: "root" }
+  - { key: MYSQL_DATABASE, value: "docker" }
+  - { key: MYSQL_USER, value: "docker" }
+  - { key: MYSQL_PASSWORD, value: "docker" }
+  - { key: MYSQL_MOUNT_DIR, value: "/opt/mysql" }
+  - { key: PATH, value: "{{ ansible_env.PWD }}/bin:$PATH" }

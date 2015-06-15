@@ -1,0 +1,64 @@
+app:
+  build: docker/php-fpm
+  volumes:
+    - ${APP_MOUNT_DIR}:/var/www/html
+  environment:
+    - "SERVICE_NAME=app"
+    - "SERVICE_TAGS=app"
+  dns:
+    - "10.1.42.1"
+    - "8.8.8.8"
+  links:
+     - mysql:mysql
+  restart: always
+
+mysql:
+  image: mysql:latest
+  volumes:
+    - ${MYSQL_MOUNT_DIR}:/var/lib/mysql
+  environment:
+    SERVICE_NAME: "mysql"
+    SERVICE_TAGS: "mysql"
+    MYSQL_ROOT_PASSWORD:
+    MYSQL_DATABASE:
+    MYSQL_USER:
+    MYSQL_PASSWORD:
+  restart: always
+
+nginx:
+  build: docker/nginx
+  environment:
+    - "affinity:container!=nodes_nginx_*"
+    - "CONSUL_PORT_8500_TCP_ADDR=127.0.0.1"
+    - "SERVICE_NAME=nginx"
+    - "SERVICE_TAGS=nginx"
+  net: "host"
+  restart: always
+
+consul:
+  command: -server -bootstrap -data-dir ./data -ui-dir /ui 
+  image: progrium/consul:latest
+  ports:
+    - "8300"
+    - "8400"
+    - "8500"
+    - "8600/udp"
+  environment:
+    CONSUL_SERVER_ADDRESS:
+    - "affinity:container!=nodes_consul_*"
+    - "SERVICE_NAME=consul"
+    - "SERVICE_TAGS=consul"
+  net: "host"
+  restart: always
+
+registrator:
+  command: -internal consul://127.0.0.1:8500
+  image: sttts/registrator:latest
+  volumes:
+    - "/var/run/docker.sock:/tmp/docker.sock"
+  environment:
+    - "affinity:container!=nodes_registrator_*"
+    - "SERVICE_NAME=registrator"
+    - "SERVICE_TAGS=registrator"
+  net: "host"
+  restart: always

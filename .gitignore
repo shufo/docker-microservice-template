@@ -1,0 +1,14 @@
+# Ignore cache and unneeded files
+.DS_Store
+Thumbs.db
+*.log
+__cache__*
+
+# vagrant
+.vagrant
+
+# ansible
+/ansible/bin
+
+# envrc
+.envrc

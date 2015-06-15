@@ -1,0 +1,6 @@
+---
+docker_tls: no
+docker_port: 2375
+app_mount_dir: /opt/app
+mysql_mount_dir: /opt/mysql
+ansible_python_interpreter: "PATH=/home/core/bin:$PATH python"

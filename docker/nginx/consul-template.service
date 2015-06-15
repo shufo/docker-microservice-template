@@ -1,0 +1,5 @@
+#!/bin/sh
+
+exec consul-template \
+    -consul ${CONSUL_PORT_8500_TCP_ADDR}:8500 \
+    -template "/etc/consul-templates/app.conf.ctmpl:/etc/nginx/conf.d/app.conf:sv hup nginx || true"
